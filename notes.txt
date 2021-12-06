@@ -1,0 +1,29 @@
+Difference apt & aptitude :
+SELinux
+AppArmor
+
+Sudo :
+On peut modifier /etc/sudoers.d directement ou alors ajouter des fichiers de conf dans
+le dossier /etc/sudoers.d
+Au lancement de sudo, le programme va scanner tous les fichiers dans le dossier
+qui ne contiennent pas de point et ne finissent pas par asciitilde
+Modification conseillee avec visudo qui va checker les erreurs de syntaxe
+En cas de litige, c'est la derniere ligne qui est prise en compte
+which pour trouver l'emplacement d'une commande
+
+Gestion des groupes 
+
+Serveur SSH :
+Installation via openssh-server
+systemctl start/stop/restart ssh
+ssh username@adressip -p numerodeport pour se connecter a un serveur ssh
+(port par defaut : 22)
+scp pour copier en ssh : scp user@adressip:/home/download/fichier par ex
+Mofifier le sshd pour le port 4242 && le rootlogin
+
+Authentification :
+
+UFW :
+Installation
+ufw enable
+ufw status verbose
