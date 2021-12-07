@@ -1,12 +1,26 @@
 Difference apt & aptitude :
 Gestionnaire de packet tous les 2
 
+Politique Mot de Passe:
+Dans /etc/login.defs
+PASS_MAX_DAYS 30
+PASS_MIN_DAYS 2
+PASS_WARN_AGE 7
+Puis apres avoir pris package libpam-pwquality
+puis go /etc/pamd.d common-password
+Ajouter a la ligne pam_pwquality.so 
+retry=3 minlen=10 dcredit=-1 ucredit=-1 maxclassrepeat=3 usercheck=1 enforce_for_root difok=7
+chage -l user pour voir les infos du password
+chage -m 2 fle-blay && chage -M 30 fle-blay
+idem pour root
+
 Apt : Advanced Packaging Tool
 No GUI
 Cherche dans /etc/apt/source.list le package et ses dependances
 Grande flexibilitee dans les gestion, desactivation des MAJ, ajout d'autres
 sources pour chercher des packages
 Commande moo
+apt show cmd pour connaitre les dependances et info sur le prog
 
 Aptitude :
 GUI, donc plus haut niveau
