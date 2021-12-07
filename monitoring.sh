@@ -12,7 +12,7 @@ do
 	MESSAGE_FINAL="${MESSAGE_FINAL}${MESSAGE[$i]}"
 done
 
-echo "$MESSAGE_FINAL"
+echo "${MESSAGE_FINAL::-1}"
 
 #echo "${MESSAGE[@]}"
 #echo "${MESSAGE[*]}"
