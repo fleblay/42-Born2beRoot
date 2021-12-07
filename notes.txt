@@ -1,6 +1,36 @@
 Difference apt & aptitude :
-SELinux
-AppArmor
+Gestionnaire de packet tous les 2
+
+Apt : Advanced Packaging Tool
+No GUI
+Cherche dans /etc/apt/source.list le package et ses dependances
+Grande flexibilitee dans les gestion, desactivation des MAJ, ajout d'autres
+sources pour chercher des packages
+Commande moo
+
+Aptitude :
+GUI, donc plus haut niveau
+Peut emuler les commandes de apt-get, apt-cache et les autres utilitaires apt
+Aptitude va plus loin dans la gestion des packages, en automatisant certaines
+taches (versus apt-get -auto-remove, cad il faut le specifier)
+Aptitude permet de savoir quel package suggerer par d'autres avec why
+aptitude why 
+Aptitude dit si package est installe ou non versus apt-cache
+Possibilitee de chercher via des regex-like dans aptitude
+
+SELinux & AppArmor :
+Logiciels pour implementer le MAC (Mandatory Access Control) sous Linux
+D'autres methodes existent : DAC (Discretionary), ie les droits Unix
+RBAC (Role Based) par exemple sudo
+
+Permettent d'isoler les applications les unes des autres et donc d'isoler
+un attaquant du reste du systeme si un applic est compromise
+SELinux complexe mais donne plus de controle. Difficiles a verifier
+Apparmor est plus simple, profile peuvent etre fait par des humains. Apparmor
+utilise des chemins pour donner les acces, ce qui est plus facile a verifier
+pour un humain.
+
+SELinux : Security Enhance Linux
 
 Sudo :
 On peut modifier /etc/sudoers.d directement ou alors ajouter des fichiers de conf dans
@@ -10,8 +40,32 @@ qui ne contiennent pas de point et ne finissent pas par asciitilde
 Modification conseillee avec visudo qui va checker les erreurs de syntaxe
 En cas de litige, c'est la derniere ligne qui est prise en compte
 which pour trouver l'emplacement d'une commande
+Defaults passwd_tries=3
+Defaults badpass_message="Wrong passwd stupid"
+Defaults requiretty
+Defaults iolog_file="/var/log/sudo/"
+Defautls log_input
+Defaults log_output
+Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:
+/bin:/snap/bin"
 
-Gestion des groupes 
+Gestion des groupes :
+La liste des groupes est dans etc/group
+adduser fred pour ajouter l'utilisateur fred
+passwd fred pour changer le password de fred
+deluser [--remove-home] fred pour supprimer fred [et son home]
+addgroup friend
+usermod -l fred pour renommer l'utilisateur fred
+usermod -g friend fred pour ajouter fred au groupe des friend (remplace)
+usermod -aG friend,amis,potos fred pour ajouter fred (ajout) a plusieurs
+delgroup
+chown fred test.txt
+chgrp friend test.txt
+usermod -G sudo,user42 fle-blay
+relancer le serveur ssh
+
+Changer Hostname :
+
 
 Serveur SSH :
 Installation via openssh-server
@@ -20,10 +74,101 @@ ssh username@adressip -p numerodeport pour se connecter a un serveur ssh
 (port par defaut : 22)
 scp pour copier en ssh : scp user@adressip:/home/download/fichier par ex
 Mofifier le sshd pour le port 4242 && le rootlogin
+(uncomment Port 22 et le modifier a 4242)
+(PermitRootLogin no)
 
-Authentification :
+Authentification SSH :
+L'authentification se fait via des clefs asymetriques
+La connexion est elle faite avec une encryption symetrique
+
+Clef sym
+Pour envoyer des donnees dans les deux sens, une seule clef necessaire
+La clef est cree ensemble par le client et le serveur pendant le KEA
+ou Key Exchange Algorithm. Cette operation est realisee a chaque connexion et 
+est valide uniquement pour la duree de la session.
+Cela est realise avant l'authentification client
+La methode de cryptage par defaut est AES128-ctr sur Linux
+
+Clef Asym
+Pour envoyer des donnes dans un sens, deux clefs sont necessaires
+Seule la clef privee permet de dechiffrer les message encryptes par le clef
+publique. Meme la clef publique ne peut pas les dechiffrer.
+La clef privee ne doit jamais etre partagee
+Durant la key exchange process, une assym encryption est utilisee. Les deux
+parties produisent une des clefs temporaires et echangent les clefs publiques.
+Elle est egalement utilisee pour l'authentification du client,
+en deposant sa clef publique dans les authorized keys du serveur.
+Cela permettra au serveur d'envoyer un message crypte au client, qui devra le
+decrypter pour prouver qu'il a la clef privee
+
+Hashing
+Le hashing permet une signature, cad une sorte de resume des plusieurs infos
+Un des attributs principaux est qu'il n'ont pas pour but d'etre reverse pour
+recuerer les infos
+Utiliser la meme fonction de hash avec le meme message doit produire le meme
+hash
+Un utilisateur ne doit pouvoir recreer le message original avec un hash, mais
+il peut dire un message donne a produit une hash donne
+Les hash sont utilises pour des verifications d'integrite de donnes et d'
+authenticite de communication.
+Pour SSH, le hash est utilise pour les HMAC, ie hash-based message 
+authentification code, pour verifier que le message recu est intact et non
+modifie
+De la meme facon qu'avec la clef sym, le choix d'un algo pour le MAC est fait 
+par le client et le serveur
+Chaque message envoye apres l'accord sur l'encryption doit avoir un MAC 
+pour verifier son integritee
+Le MAC est envoye non cryptee comme derniere partie du message
+
+Procedure connexion SSH :
+Partie 1 : se mettre d'accord et etablir une encryption pour les futures com
+Partie 2 : Authentifier l'utilisateur et verifier s'il peut acceder au serveur
+
+Negociation de l'encryption pour la session :
+Client fait une connexion TCP
+Serveur repond avec les version de protocole il supporte
+Si client match un des protocoles, connexion continue
+Serveur donne sa clef publique, qui permet au client de verifier que c'est
+le bon serveur
+
+Algo de Diffie-Hellman pour creer une clef sym pour la session. Le client et le
+serveur vont pouvoir combiner des infos privees avec des infos publiques de
+l'autre pour arriver a une clef identique secrete
+Les clefs de session asy utilisee sont completement differentes des clefs
+utilisees pour l'authentification client
+
+Procedure Diffie-Hellman :
+Choix d'un nombre premier commun et d'un generateur d'encryption (AES)
+Choix d'un nombre premier perso pour chacun
+Creation couple clef privee et perso chacun avec npc, npp et AES
+Echange des clef publiques
+Avec clef privee, clef publique autre et npc, generation par chacun de la meme
+clef symetrique
+Encryption de tous les messages avec cette clef sym, appelee BPP, ou binary
+packet protocol.
+
+Authentification de l'utilisateur :
+Client demande a authentifier une paire de clef en donant l'ID correspondant
+Serveur check le fichier des clef authorisee pour l'account demandee pour trouver
+l'ID de clef demande
+Le serveur genere un nombre random et le crypte avec la clef publique
+Le serveur envoie le message
+Le client decrypte le message et trouve le nombre avec la clef privee
+Le client combine le nombre decryptee avec la clef sym de session partagee
+pour calculer un hash
+Le client renvoie ce message en reponse
+Le serveur calcule le hash de son cote et si similaire, cela prouve que le client
+a bien la clef privee correspondant a l'ID de paire de clef
 
 UFW :
 Installation
 ufw enable
 ufw status verbose
+ufw allow in 4242
+
+Connexion en ssh a la VM :
+ip a
+127.0.0.1 est le host (ip publique)
+10.0.2.15 est l'ip privee
+Dans settings de la VM, Network
+127.0.0.1 4242 pour Host / 10.0.2.15 4242 pour le Guest
