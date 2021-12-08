@@ -190,3 +190,13 @@ Dans settings de la VM, Network
 Script :
 
 Install sysstat
+crontab -l pour afficher
+crontab -e pour edit
+mm hh jj MM DDD [user] cmd [> log]
+1-5 pour 1 a 5
+*/6 pour toutes les 6
+2,7 pour 2 et 7
+si JJJ, c'est une conditon en plus
+sudo systemctl enable cron pour l'activer
+editer la crontab dans /etc/crontab avec
+10 * * * * root /home/fle-blay/monitoring.sh 2>/dev/null/ | wall 2>/dev/null
