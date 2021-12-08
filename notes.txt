@@ -1,3 +1,24 @@
+LVM :
+lsblk pour avoir l'etat actuel
+lvm2 pour avoir les outils de gestion
+PV : Physical Volumes. Disques durs ou partition de disques dur
+VG : Volume group. Assemblage d'un ou plusieurs PV
+LV : Logical volume. Redecouple les VG sous forme de partition virtuelle
+PE : Physical Extent. Les donnes sont divisee bloc appelles PE
+LE : Logical Extent. Idem, mais au niveau logique. La taille des blocs est la
+meme pour tous les LV au sein d'un VG
+
+mkfs pour creer des systemes de fichier sur des LV ou PV
+mount LV dir pour monter LV sur le dir
+
+Utiliser gparted pour PC pour creer les partitions avant de les confier a LVM
+
+Boot n'est pas compatible avec LVM donc il est sur un espace disque non
+geree par LVM
+
+Volumes crees avec les gestionnaire peuvent etre redimensionnes et deplaces
+presque a volonte
+
 Difference apt & aptitude :
 Gestionnaire de packet tous les 2
 
@@ -79,7 +100,8 @@ usermod -G sudo,user42 fle-blay
 relancer le serveur ssh
 
 Changer Hostname :
-
+cmd hostname pour voir
+cmd hostname [nouveaunom] pour le changer
 
 Serveur SSH :
 Installation via openssh-server
