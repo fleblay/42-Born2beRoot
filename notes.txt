@@ -186,3 +186,7 @@ ip a
 10.0.2.15 est l'ip privee
 Dans settings de la VM, Network
 127.0.0.1 4242 pour Host / 10.0.2.15 4242 pour le Guest
+
+Script :
+
+Install sysstat
