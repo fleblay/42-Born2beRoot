@@ -1,4 +1,8 @@
-LVM :
+LUKS pour : Linux Unified Key Setup
+Sert a encrypter les disk ou partitions
+apt-get install cryptsetup
+
+LVM : Logical Volume Manager
 lsblk pour avoir l'etat actuel
 lvm2 pour avoir les outils de gestion
 PV : Physical Volumes. Disques durs ou partition de disques dur
@@ -7,6 +11,8 @@ LV : Logical volume. Redecouple les VG sous forme de partition virtuelle
 PE : Physical Extent. Les donnes sont divisee bloc appelles PE
 LE : Logical Extent. Idem, mais au niveau logique. La taille des blocs est la
 meme pour tous les LV au sein d'un VG
+
+apropos vg ou man -k vg pour connaitres les commandes vg pv lv etc...
 
 mkfs pour creer des systemes de fichier sur des LV ou PV
 mount LV dir pour monter LV sur le dir
@@ -18,6 +24,48 @@ geree par LVM
 
 Volumes crees avec les gestionnaire peuvent etre redimensionnes et deplaces
 presque a volonte
+
+Il y a distinction entre LV et le systeme de fichier. Le LV est la boite
+alors que le systeme de fichier est le contenu de la boite. Attention a ne
+pas diminuer la taille de la boite sans s'occuper avant du contenu
+--resizefs permet de resize le fs en memetemps que le LV grace a fsadm
+
+Manip :
+lvdisplay ou vgdisplay pour voir a chaque fois les infos avant appeler cmd
+lsblk
+blkid
+df -h -BM pour afficher les volumes logiques dispo en human readable par Mo
+
+cd / pour ne pas etre sur le home
+sudo lvresize --resizefs --size -3000M /dev/mapper/fle--blay42--vg-home
+sudo lvcreate -n var -L 750m fle-blay42-vg
+sudo lvcreate -n srv -L 750m fle-blay42-vg
+sudo lvcreate -n tmp -L 750m fle-blay42-vg
+sudo lvcreate -n var-log -L 740m fle-blay42-vg
+sudo vgrename fle-blay42-vg LVMGroup
+sudo vi /etc/fstab pour changer le nom en dur du LV
+//changer aussi le mount pour root
+// sudo systemctl daemon-reload
+sudo vi /boot/grub/grub.cfg pour changer le nom du LV dans les lignes "Linux..."
+sudo lvrename /dev/LVMGroup/swap_1 /dev/LVMGroup/swap
+blkid et ajouter a /etc/fstab tout les volumes crees
+vim /etc/initramfs-tools/resume pour changer le bon swap
+update-initramfs -u pour maj de l'emplacement du VG non trouve au moment du boot (lancien)
+sudo update-grub /dev/sda pour qu'il recupere le /boot/initrdXXXXXXXXXX MAJ
+sudo grub-install /dev/sda
+
+TO INVESTIGATE : initrd
+
+sudo mkfs -t ext4 /dev/LVMGroup/var
+sudo mkfs -t ext4 /dev/LVMGroup/srv
+sudo mkfs -t ext4 /dev/LVMGroup/tmp
+sudo mkfs -t ext4 /dev/LVMGroup/var-log
+sudo mount /dev/mapper/LVMGroup-var /var
+sudo mount /dev/mapper/LVMGroup-srv /srv
+sudo mount /dev/mapper/LVMGroup-tmp /tmp
+sudo mount /dev/mapper/LVMGroup-var--log /var/log
+sudo mkswap /dev/mapper/LVMGroup-swap
+sudo swapon /dev/mapper/LVMGroup-swap
 
 Difference apt & aptitude :
 Gestionnaire de packet tous les 2
@@ -210,6 +258,7 @@ Dans settings de la VM, Network
 127.0.0.1 4242 pour Host / 10.0.2.15 4242 pour le Guest
 
 Script :
+WARNING : CHANGER LA LIGNE POUR DISK USAGE !
 
 Install sysstat
 crontab -l pour afficher
@@ -221,4 +270,4 @@ mm hh jj MM DDD [user] cmd [> log]
 si JJJ, c'est une conditon en plus
 sudo systemctl enable cron pour l'activer
 editer la crontab dans /etc/crontab avec
-10 * * * * root /home/fle-blay/monitoring.sh 2>/dev/null/ | wall 2>/dev/null
+*/10 * * * * root /home/fle-blay/monitoring.sh 2>/dev/null/ | wall 2>/dev/null

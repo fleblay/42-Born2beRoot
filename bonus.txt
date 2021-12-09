@@ -1,0 +1,14 @@
+sudo dpkg --configure -a pour fix apt-get update
+
+MariaDB
+Lighttpd
+PHP
+Apache2
+
+systemctl
+
+mysql pour entrer dans MariaDB
+
+ufw allow 80
+
+ss -tunlp
