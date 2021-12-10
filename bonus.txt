@@ -1,6 +1,6 @@
 sudo dpkg --configure -a pour fix apt-get update
 
-MariaDB
+MariaDB : freddb fred/fredpass
 Lighttpd
 PHP
 Apache2

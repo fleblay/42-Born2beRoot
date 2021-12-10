@@ -67,6 +67,40 @@ sudo mount /dev/mapper/LVMGroup-var--log /var/log
 sudo mkswap /dev/mapper/LVMGroup-swap
 sudo swapon /dev/mapper/LVMGroup-swap
 
+TUTOV2 :
+verif noms avec sudo lvdisplay
+cd / pour ne pas etre sur le home
+sudo lvresize --resizefs --size -3000M /dev/fle-blay42-vg/home
+verif noms avec sudo vgdisplay
+sudo lvcreate -n var -L 750m fle-blay42-vg
+sudo lvcreate -n srv -L 750m fle-blay42-vg
+sudo lvcreate -n tmp -L 750m fle-blay42-vg
+sudo lvcreate -n var-log -L 740m fle-blay42-vg
+sudo lvrename /dev/fle-blay42-vg/swap_1 /dev/fle-blay42-vg/swap
+sudo vgrename fle-blay42-vg LVMGroup
+//MAJ /etc/fstab
+sudo mkfs -t ext4 /dev/LVMGroup/var
+sudo mkfs -t ext4 /dev/LVMGroup/srv
+sudo mkfs -t ext4 /dev/LVMGroup/tmp
+sudo mkfs -t ext4 /dev/LVMGroup/var-log
+MAJ /etc/fstab avec les infos de blkid (attention var--log)
+->ou use fichier fstab.bckp
+sudo systemctl daemon-reload
+sudo vim /boot/grub/grub.cfg et changer 3 fois
+vgchange -ay
+//lvchange /dev/LVMGroup/root
+update-initramfs -k all -u
+MAJ resume
+update-initramfs -k all -u
+reboot
+sudo update-grub
+reboot
+
+fix apt-get: 
+sudo apt-get update
+sudo dpkg --configure -a
+//sudo dpkg --reconfigure NAME
+
 Difference apt & aptitude :
 Gestionnaire de packet tous les 2
 
