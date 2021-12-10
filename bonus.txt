@@ -7,5 +7,11 @@ mysql pour entrer dans MariaDB
 ufw allow 80
 ss -tunlp
 
+Lighttpd :
 
-
+sudo ufw allow http
+Virtual Box blank 80 blank 80
+apt-get install lighttpd
+systemctl start lighttpd
+systemctl enable lighttpd
+systemctl status lighttpd

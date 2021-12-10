@@ -62,6 +62,7 @@ vgchange -ay
 //lvchange /dev/LVMGroup/root
 update-initramfs -k all -u
 MAJ resume
+//mkdir /home/fle-blay/tmp
 (potentiellement, 2 actions au dessus skipable avec swapon -a)
 (https://debian-facile.org/viewtopic.php?pid=201384#p201384)
 update-initramfs -k all -u
