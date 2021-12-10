@@ -1,14 +1,11 @@
-sudo dpkg --configure -a pour fix apt-get update
-
 MariaDB : freddb fred/fredpass
 Lighttpd
 PHP
 Apache2
-
 systemctl
-
 mysql pour entrer dans MariaDB
-
 ufw allow 80
-
 ss -tunlp
+
+
+

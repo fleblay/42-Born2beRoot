@@ -36,36 +36,7 @@ lsblk
 blkid
 df -h -BM pour afficher les volumes logiques dispo en human readable par Mo
 
-cd / pour ne pas etre sur le home
-sudo lvresize --resizefs --size -3000M /dev/mapper/fle--blay42--vg-home
-sudo lvcreate -n var -L 750m fle-blay42-vg
-sudo lvcreate -n srv -L 750m fle-blay42-vg
-sudo lvcreate -n tmp -L 750m fle-blay42-vg
-sudo lvcreate -n var-log -L 740m fle-blay42-vg
-sudo vgrename fle-blay42-vg LVMGroup
-sudo vi /etc/fstab pour changer le nom en dur du LV
-//changer aussi le mount pour root
-// sudo systemctl daemon-reload
-sudo vi /boot/grub/grub.cfg pour changer le nom du LV dans les lignes "Linux..."
-sudo lvrename /dev/LVMGroup/swap_1 /dev/LVMGroup/swap
-blkid et ajouter a /etc/fstab tout les volumes crees
-vim /etc/initramfs-tools/resume pour changer le bon swap
-update-initramfs -u pour maj de l'emplacement du VG non trouve au moment du boot (lancien)
-sudo update-grub /dev/sda pour qu'il recupere le /boot/initrdXXXXXXXXXX MAJ
-sudo grub-install /dev/sda
-
 TO INVESTIGATE : initrd
-
-sudo mkfs -t ext4 /dev/LVMGroup/var
-sudo mkfs -t ext4 /dev/LVMGroup/srv
-sudo mkfs -t ext4 /dev/LVMGroup/tmp
-sudo mkfs -t ext4 /dev/LVMGroup/var-log
-sudo mount /dev/mapper/LVMGroup-var /var
-sudo mount /dev/mapper/LVMGroup-srv /srv
-sudo mount /dev/mapper/LVMGroup-tmp /tmp
-sudo mount /dev/mapper/LVMGroup-var--log /var/log
-sudo mkswap /dev/mapper/LVMGroup-swap
-sudo swapon /dev/mapper/LVMGroup-swap
 
 TUTOV2 :
 verif noms avec sudo lvdisplay
@@ -91,6 +62,8 @@ vgchange -ay
 //lvchange /dev/LVMGroup/root
 update-initramfs -k all -u
 MAJ resume
+(potentiellement, 2 actions au dessus skipable avec swapon -a)
+(https://debian-facile.org/viewtopic.php?pid=201384#p201384)
 update-initramfs -k all -u
 reboot
 sudo update-grub
