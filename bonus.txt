@@ -7,6 +7,10 @@ mysql pour entrer dans MariaDB
 ufw allow 80
 ss -tunlp
 
+Utilisation du tuto avec modif :
+https://www.linuxcloudvps.com/blog/how-to-install-lighttpd-on-ubuntu-18-04/
+https://github.com/hanshazairi/42-born2beroot#1-installation
+
 Lighttpd :
 
 sudo ufw allow http
@@ -15,3 +19,75 @@ apt-get install lighttpd
 systemctl start lighttpd
 systemctl enable lighttpd
 systemctl status lighttpd
+
+sudo apt-get install mariadb-server
+sudo mysql_secure_installation
+yes pour unix socket
+pas de pass root et non pour root passw sinon Y partout
+
+sudo mariadb
+CREATE DATABASE fredodb;
+GRANT ALL ON fredodb.* TO 'fredo'@'localhost' IDENTIFIED BY 'fredouser'
+WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+exit
+mariadb -u fredo -p
+SHOW DATABASES;
+exit
+
+sudo apt-install php-cgi php-mysql
+sudo apt-get install wget
+
+sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
+sudo tar -xzvf /var/www/html/latest.tar.gz
+sudo rm /var/www/html/latest.tar.gz
+sudo cp -r /var/www/html/wordpress/* /var/www/html
+sudo rm -rf /var/www/html/wordpress
+sudo cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+
+sudo vi /var/www/html/wp-config.php
+remplacer les DB_name, DB_user et DB_passwd
+
+sudo lighty-enable-mod fastcgi
+sudo lighty-enable-mod fastcgi-php
+sudo service lighttpd force-reload
+
+goto 127.0.0.1
+fredo/fredouser4242
+fle-blay@student.42.fr
+
+
+
+
+
+
+
+
+
+apt-get install mariadb-server
+systemctl start mariadb
+systemctl enable mariadb
+systemctl status mariadb
+
+apt-get install php7.4 php7.4-fpm php7.4-mysql php7.4-cli php7.4-curl php7.4-xml php7.4-mbstring php7.4-gd
+
+vim /etc/php/7.2/fpm/pool.d/www.conf
+remplacer listen = /run/php/php7.2-fpm.sock
+par listen = 127.0.0.1:9000
+
+vim /etc/lighttpd/conf-available/15-fastcgi-php.conf
+remplacer
+
+"bin-path" => "/usr/bin/php-cgi",
+"socket" => "/var/run/lighttpd/php.socket",
+
+par
+
+"host" => "127.0.0.1",
+"port" => "9000",
+
+lighty-enable-mod fastcgi
+lighty-enable-mod fastcgi-php
+
+service lighttpd force-reload
+systemctl restart php7.4-fpm
