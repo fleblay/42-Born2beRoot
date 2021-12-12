@@ -56,38 +56,24 @@ goto 127.0.0.1
 fredo/fredouser4242
 fle-blay@student.42.fr
 
+Installation serveur ftp
+
+sudo apt-get install vsftpd
+sudo ufw allow 21
+sudo vim /etc/vsftpd.conf
+uncomment write_enable=YES
+uncomment local_emable=YES
+uncomment local_umask=022
+add userlist_enable=YES
+add userlist_file=/etc/vsftpd.userlist
+add userlist_deny=NO
+vi/etc/vsftpd.userlist et ajouter fle-blay
+sudo apt-get install yafc
+sudo ufw allow 22
+yafc fle-blay@localhost
+
+//anonymous_enable=YES
 
 
 
 
-
-
-
-
-apt-get install mariadb-server
-systemctl start mariadb
-systemctl enable mariadb
-systemctl status mariadb
-
-apt-get install php7.4 php7.4-fpm php7.4-mysql php7.4-cli php7.4-curl php7.4-xml php7.4-mbstring php7.4-gd
-
-vim /etc/php/7.2/fpm/pool.d/www.conf
-remplacer listen = /run/php/php7.2-fpm.sock
-par listen = 127.0.0.1:9000
-
-vim /etc/lighttpd/conf-available/15-fastcgi-php.conf
-remplacer
-
-"bin-path" => "/usr/bin/php-cgi",
-"socket" => "/var/run/lighttpd/php.socket",
-
-par
-
-"host" => "127.0.0.1",
-"port" => "9000",
-
-lighty-enable-mod fastcgi
-lighty-enable-mod fastcgi-php
-
-service lighttpd force-reload
-systemctl restart php7.4-fpm
