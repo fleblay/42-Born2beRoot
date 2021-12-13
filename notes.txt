@@ -139,6 +139,7 @@ Defaults passwd_tries=3
 Defaults badpass_message="Wrong passwd stupid"
 Defaults requiretty
 Defaults iolog_file="/var/log/sudo/"
+Defaults logile="var/log/sudo/sudo.log"
 Defautls log_input
 Defaults log_output
 Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:
@@ -264,6 +265,10 @@ Installation
 ufw enable
 ufw status verbose
 ufw allow in 4242
+
+ss -tunlp pour voir les process (en sudo pour plus d'infos !)
+si exim : sudo systemctl disable exim4.service
+sudo systemctl stop exim4
 
 Connexion en ssh a la VM :
 ip a
