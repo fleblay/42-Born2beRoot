@@ -1,3 +1,7 @@
+disk: encryptionpassphrase
+root : fredoroot// Born2bepouet
+fle-blay : fredouser// Born2befred
+
 LUKS pour : Linux Unified Key Setup
 Sert a encrypter les disk ou partitions
 apt-get install cryptsetup
@@ -86,7 +90,7 @@ PASS_WARN_AGE 7
 Puis apres avoir pris package libpam-pwquality
 puis go /etc/pamd.d common-password
 Ajouter a la ligne pam_pwquality.so 
-retry=3 minlen=10 dcredit=-1 ucredit=-1 maxclassrepeat=3 usercheck=1 enforce_for_root difok=7
+retry=3 minlen=10 dcredit=-1 ucredit=-1 maxrepeat=3 reject_username enforce_for_root difok=7
 chage -l user pour voir les infos du password
 chage -m 2 fle-blay && chage -M 30 fle-blay
 idem pour root
@@ -156,8 +160,11 @@ usermod -G sudo,user42 fle-blay
 relancer le serveur ssh
 
 Changer Hostname :
-cmd hostname pour voir
-cmd hostname [nouveaunom] pour le changer
+//cmd hostname pour voir
+//cmd hostname [nouveaunom] pour le changer
+hostnamectl set-hostname nvnom
+vim /etc/hosts
+hostamectl
 
 Serveur SSH :
 Installation via openssh-server
