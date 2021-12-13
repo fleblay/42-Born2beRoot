@@ -279,3 +279,20 @@ si JJJ, c'est une conditon en plus
 sudo systemctl enable cron pour l'activer
 editer la crontab dans /etc/crontab avec
 */10 * * * * root /home/fle-blay/monitoring.sh 2>/dev/null/ | wall 2>/dev/null
+
+Port 68 :
+
+sudo vim /etc/network/interfaces
+comment iface enp0s3 inet dhcp
+
+iface enp0s3 inet static
+	address 10.0.2.15/24
+	gateway 10.0.2.2
+	dns-nameservers 10.0.2.3
+
+Dans VirtualBox Preferences/network
+new network nat
+network cidr 10.0.2.0/24
+portforwarding : 80, 4242, 10100, 10101, 10102, 21 sur 10.0.2.15
+
+changer dans la vm pour utiliser le network nat cree

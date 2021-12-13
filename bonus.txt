@@ -62,7 +62,7 @@ sudo apt-get install vsftpd
 sudo ufw allow 21
 sudo vim /etc/vsftpd.conf
 uncomment write_enable=YES
-uncomment local_emable=YES
+uncomment local_enable=YES
 uncomment local_umask=022
 add userlist_enable=YES
 add userlist_file=/etc/vsftpd.userlist
@@ -72,8 +72,12 @@ sudo apt-get install yafc
 sudo ufw allow 22
 yafc fle-blay@localhost
 
-//anonymous_enable=YES
+pasv_enable=YES
+pasv_max_port=10102
+pasv_min_port=10100
 
+open port
+restart ufw && restart
+ajout des port dans nat VM
 
-
-
+se connecter avec lftp
